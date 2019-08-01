@@ -2,14 +2,19 @@
 * 处理路由
 * 根据不同的请求方法+请求路径设置具体的请求处理函数
 */
+
+/**
+ * 未封装异步API的路由方法
+ */
+/*
 var fs = require('fs');
 var express = require('express');
 
 var dbPath = './db.json';
 var router = express.Router();
 
-/**渲染学生列表页面*/
-router.get('/', function (req, res) {
+/!**渲染学生列表页面*!/
+router.get('/students', function (req, res) {
     fs.readFile(dbPath, 'utf8', function (err, data) {
         if (err) {
             return res.status(500).send('Server error.');
@@ -21,16 +26,17 @@ router.get('/', function (req, res) {
     });
 });
 
-/**渲染添加学生页面*/
+/!**渲染添加学生页面*!/
 router.get('/students/new', function (req, res) {
     res.render('new.html');
 });
-/**处理添加学生页面
+/!**处理添加学生页面
 * 添加学生
 * 跳转到新增学生信息页面
 * 填写学生基本信息
+ * 文件不是对象，无法直接添加，所以要先读取文件，转为对象，然后再写入，最后保存更新后的内容到文件
 * 存储到db.json文件
-* 重定向回学生信息页面*/
+* 重定向回学生信息页面*!/
 router.post('/students/new', function (req, res) {
     fs.readFile(dbPath,'utf8', function (err, data) {
         if (err) {
@@ -52,7 +58,7 @@ router.post('/students/new', function (req, res) {
     res.redirect('/');
 });
 
-/**渲染编辑学生页面*/
+/!**渲染编辑学生页面*!/
 router.get('/students/edit', function (req, res) {
     fs.readFile(dbPath, 'utf8', function (err, data) {
         if (err) {
@@ -68,11 +74,11 @@ router.get('/students/edit', function (req, res) {
     });
 });
 
-/**
+/!**
  * 处理编辑学生
 * 获取表单数据
 * 更新db.json文件
-* 发送响应,重定向到学生列表页面*/
+* 发送响应,重定向到学生列表页面*!/
 router.post('/students/edit', function (req, res) {
     fs.readFile(dbPath, 'utf8', function (err, data) {
         if (err) {
@@ -102,9 +108,9 @@ router.post('/students/edit', function (req, res) {
     res.redirect('/');
 });
 
-/**
+/!**
  * 处理删除学生
- */
+ *!/
 router.get('/students/delete', function (req, res) {
     fs.readFile(dbPath, 'utf8', function (err, data) {
         if (err) {
@@ -132,4 +138,43 @@ router.get('/students/delete', function (req, res) {
     });
     res.redirect('/');
 });
+*/
+
+/**
+ * 封装异步API的路由方法
+ */
+var express = require('express');
+var Student = require('./student.js');
+var router = express.Router();
+
+router.get('/students', function (req, res) {
+    Student.find(function (err, students) {
+        if (err) {
+            return res.status(500).send('Server error.');
+        };
+        res.render('index.html', {
+            classManager: ['班长','团支书','学习委员'],
+            students: students
+        });
+    });
+});
+
+router.get('/students/new', function (req, res) {
+    res.render('new.html');
+});
+router.post('/students/new', function (req, res) {
+
+});
+
+router.get('/students/edit', function (req, res) {
+
+});
+router.post('/students/edit', function (req, res) {
+
+});
+
+router.get('/students/delete', function (req, res) {
+
+});
+
 module.exports = router;
