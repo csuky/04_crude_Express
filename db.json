@@ -1,1 +1,1 @@
-{"students":[{"name":"张三","gender":"0","age":"21","hobbies":"画画","id":1},{"name":"李四","gender":"0","age":"23","hobbies":"跳舞","id":2}]}
+{"students":[{"name":"张三","gender":"男","age":"21","hobbies":"足球","id":"1"},{"name":"李四","gender":"女","age":"23","hobbies":"篮球","id":"2"},{"name":"王五","gender":"男","age":"25","hobbies":"游泳","id":3}]}

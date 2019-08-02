@@ -6,8 +6,7 @@
 /**
  * 未封装异步API的路由方法
  */
-/*
-var fs = require('fs');
+/*var fs = require('fs');
 var express = require('express');
 
 var dbPath = './db.json';
@@ -55,7 +54,7 @@ router.post('/students/new', function (req, res) {
             };
         });
     });
-    res.redirect('/');
+    res.redirect('/students');
 });
 
 /!**渲染编辑学生页面*!/
@@ -105,7 +104,7 @@ router.post('/students/edit', function (req, res) {
             };
         });
     });
-    res.redirect('/');
+    res.redirect('/students');
 });
 
 /!**
@@ -136,9 +135,8 @@ router.get('/students/delete', function (req, res) {
             ;
         });
     });
-    res.redirect('/');
-});
-*/
+    res.redirect('/students');
+});*/
 
 /**
  * 封装异步API的路由方法
@@ -148,7 +146,7 @@ var Student = require('./student.js');
 var router = express.Router();
 
 router.get('/students', function (req, res) {
-    Student.find(function (err, students) {
+    Student.getStudentInfo(function (err, students) {
         if (err) {
             return res.status(500).send('Server error.');
         };
@@ -163,18 +161,40 @@ router.get('/students/new', function (req, res) {
     res.render('new.html');
 });
 router.post('/students/new', function (req, res) {
-
+    Student.save(req.body, function (err) {
+        if (err) {
+            return res.status(500).send('Server error.');
+        };
+        res.redirect('/students');
+    });
 });
 
 router.get('/students/edit', function (req, res) {
-
+    Student.findById(req.query.id, function (err, student) {
+        if (err) {
+            return res.status(500).send('Server error.');
+        };
+        res.render('edit.html', {
+            student: student
+        });
+    });
 });
 router.post('/students/edit', function (req, res) {
-
+    Student.updateById(req.body, function (err) {
+        if (err) {
+            return res.status(500).send('Server error.');
+        };
+        res.redirect('/students');
+    });
 });
 
 router.get('/students/delete', function (req, res) {
-
+    Student.deleteById(req.query.id, function (err) {
+        if (err) {
+            return res.status(500).send('Server error.');
+        };
+        res.redirect('/students');
+    })
 });
 
 module.exports = router;
